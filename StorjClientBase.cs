@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -60,6 +61,13 @@ namespace StorjClient
             string result = await content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(result, jsonSettings.Value);
+        }
+
+        protected T GetContent<T>(Stream stream)
+        {
+            JsonSerializer serializer = new JsonSerializer();
+            
+            return serializer.Deserialize<T>(new JsonTextReader(new StreamReader(stream)));
         }
 
         protected T DisposeAndReturnResults<T>(T results, params IDisposable[] disposableObjects)
